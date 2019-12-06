@@ -2,9 +2,6 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-// const data = axios.get('https://api.github.com/users/mphelps1978');
-// console.log(data);
-
 
 /* Step 2: Inspect and study the data coming back, this is YOUR
    github info! You will need to understand the structure of this
@@ -49,9 +46,9 @@ const followersArray = [];
 
 */
 
-function CreateProfile(data) {
+function createProfile(data) {
 	const card = document.createElement('div'),
-		profileImage = document.createElement('img'),
+		img = document.createElement('img'),
 		cardInfo = document.createElement('div'),
 		realName = document.createElement('h3'),
 		userName = document.createElement('p'),
@@ -62,7 +59,7 @@ function CreateProfile(data) {
 		following = document.createElement('p'),
 		bio = document.createElement('p');
 
-	card.appendChild(profileImage);
+	card.appendChild(img);
 	card.appendChild(cardInfo);
 	cardInfo.appendChild(realName);
 	cardInfo.appendChild(userName);
@@ -70,22 +67,43 @@ function CreateProfile(data) {
 	cardInfo.appendChild(profile);
 	profile.appendChild(githubLink);
 	cardInfo.appendChild(followers);
-	cardinfo.appendChild(following);
-	cardinfo.appendChild(bio);
+	cardInfo.appendChild(following);
+	cardInfo.appendChild(bio);
 
 	card.classList.add('card');
 	cardInfo.classList.add('card-info');
 	realName.classList.add('name');
 
-	profileImage.src = data.avatar_url;
-  realName.textContent = `Name: ${data.name}`;
-  userName.textContent = `UserName: ${data.login}`;
-  location.textContent = `Location: ${data.location}`;
-  profile.textContent = 'Profile:';
+	img.setAttribute('src', data.avatar_url);
+	realName.textContent = data.name;
+	userName.textContent = data.login;
+	location.textContent = data.location;
+	profile.textContent = 'Profile:';
+	githubLink.href = data.html_url;
+	followers.textContent = data.followers;
+	following.textContent = data.following;
+	bio.textContent = data.bio;
 
-
-
+	return card;
 }
+
+// call the API and get the data
+axios
+	.get('https://api.github.com/users/mphelps1978')
+	// if successful, add the card
+	.then(response => {
+		console.log(response);
+		const entryPoint = document.querySelector('.cards');
+		const newCard = createProfile(response);
+		entryPoint.appendChild(newCard);
+	})
+
+	//if error, display error
+	.catch(error => {
+		console.log("Something's wrong:", error);
+	});
+
+// console.log(data);
 
 /* List of LS Instructors Github username's:
   tetondan
